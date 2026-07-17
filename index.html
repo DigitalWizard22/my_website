@@ -62,13 +62,10 @@
             z-index: 0;
             pointer-events: none;
             opacity: 0.45;
-            /* more visible but still subtle */
             transition: opacity 0.6s ease;
             filter: blur(0.5px);
-            /* softens the pixels */
         }
 
-        /* dark vignette to keep edges dark */
         .hacking-overlay {
             position: fixed;
             top: 0;
@@ -81,7 +78,6 @@
                 radial-gradient(ellipse at 50% 50%, transparent 50%, rgba(11, 11, 14, 0.7) 100%);
         }
 
-        /* animated scanline overlay */
         .scanline {
             position: fixed;
             top: 0;
@@ -106,7 +102,6 @@
             }
         }
 
-        /* moving horizontal line */
         .scan-line-h {
             position: fixed;
             left: 0;
@@ -135,7 +130,6 @@
             }
         }
 
-        /* subtle grid overlay (more visible, animated) */
         .hacking-grid {
             position: fixed;
             top: 0;
@@ -161,7 +155,6 @@
             }
         }
 
-        /* data lines (CSS) */
         .data-line {
             position: fixed;
             z-index: 0;
@@ -228,7 +221,6 @@
             }
         }
 
-        /* floating orbs (depth) */
         .orb {
             position: fixed;
             border-radius: 50%;
@@ -279,7 +271,6 @@
             }
         }
 
-        /* fine grid overlay (kept as before) */
         body::before {
             content: '';
             position: fixed;
@@ -292,7 +283,7 @@
             z-index: 1;
         }
 
-        /* ----- titlebar (minimal) ----- */
+        /* ----- titlebar ----- */
         .titlebar {
             position: fixed;
             top: 0;
@@ -387,36 +378,28 @@
             z-index: 2;
         }
 
-        /* ----- section fade-up animations ----- */
+        /* ============================================================
+           SCROLL REVEAL ANIMATION (added)
+           ============================================================ */
         .section-inner {
             max-width: 1100px;
             margin: 0 auto;
             padding: 110px 40px;
             opacity: 0;
             transform: translateY(30px);
-            animation: fadeUp 0.8s ease forwards;
+            transition: opacity 0.8s cubic-bezier(0.22, 1, 0.36, 1),
+                        transform 0.8s cubic-bezier(0.22, 1, 0.36, 1);
         }
-        #home .section-inner {
-            animation-delay: 0.1s;
-        }
-        #expertise .section-inner {
-            animation-delay: 0.2s;
-        }
-        #projects .section-inner {
-            animation-delay: 0.3s;
-        }
-        #background .section-inner {
-            animation-delay: 0.4s;
-        }
-        #contact .section-inner {
-            animation-delay: 0.5s;
+        .section-inner.visible {
+            opacity: 1;
+            transform: translateY(0);
         }
 
-        @keyframes fadeUp {
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        /* #background sections stay static – no animation */
+        #background .section-inner {
+            opacity: 1 !important;
+            transform: translateY(0) !important;
+            transition: none !important;
         }
 
         /* ----- hero (clean, minimal) ----- */
@@ -429,6 +412,11 @@
             max-width: 1100px;
             margin: 0 auto;
             position: relative;
+        }
+        .hero .section-inner {
+            padding: 0;
+            opacity: 1;
+            transform: translateY(0);
         }
         .hero-grid {
             display: grid;
@@ -811,7 +799,7 @@
             color: var(--yellow);
         }
 
-        /* ----- now / status (animated) ----- */
+        /* ----- now / status ----- */
         .now-block {
             background: var(--surface);
             border: 1px solid var(--border);
@@ -976,7 +964,7 @@
             color: var(--muted);
         }
 
-        /* ----- projects grid (visual cards) ----- */
+        /* ----- projects grid ----- */
         .projects-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -1218,7 +1206,7 @@
         }
 
         /* ============================================================
-           TERMINAL CONTACT FORM (new)
+           TERMINAL CONTACT FORM
            ============================================================ */
         .terminal-window .contact-body {
             padding-bottom: 20px;
@@ -1470,6 +1458,95 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
             backdrop-filter: blur(4px);
         }
+
+                /* ============================================================
+           BOOT SCREEN
+           ============================================================ */
+        #boot-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #0b0b0e;
+            z-index: 99999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--mono);
+            color: var(--cyan);
+            transition: opacity 1s ease;
+            opacity: 1;
+            pointer-events: none;
+            /* prevent interaction while booting */;
+        }
+        #boot-screen.fade-out {
+            opacity: 0;
+        }
+        #boot-content {
+            max-width: 600px;
+            width: 90%;
+            padding: 20px;
+            border: 1px solid rgba(100, 255, 218, 0.1);
+            border-radius: 8px;
+            background: rgba(11, 11, 14, 0.9);
+            backdrop-filter: blur(4px);
+            box-shadow: 0 0 60px rgba(100, 255, 218, 0.05);
+        }
+        .boot-line {
+            font-size: 14px;
+            padding: 4px 0;
+            opacity: 0;
+            animation: bootLine 0.2s ease forwards;
+            color: var(--muted);
+        }
+        .boot-line:nth-child(1) { animation-delay: 0.1s; }
+        .boot-line:nth-child(2) { animation-delay: 0.4s; }
+        .boot-line:nth-child(3) { animation-delay: 0.7s; }
+        .boot-line:nth-child(4) { animation-delay: 1.0s; }
+        .boot-line:nth-child(5) { animation-delay: 1.3s; }
+        .boot-line:nth-child(6) { animation-delay: 1.6s; }
+        #boot-ready {
+            color: var(--cyan) !important;
+            animation-delay: 1.9s;
+        }
+        @keyframes bootLine {
+            to {
+                opacity: 1;
+            }
+        }
+
+        #boot-progress {
+            width: 100%;
+            height: 4px;
+            background: var(--surface-2);
+            border-radius: 4px;
+            margin: 20px 0 16px;
+            overflow: hidden;
+        }
+        #boot-progress-bar {
+            height: 100%;
+            width: 0%;
+            background: var(--cyan);
+            border-radius: 4px;
+            animation: bootProgress 2.5s ease forwards;
+        }
+        @keyframes bootProgress {
+            0% { width: 0%; }
+            20% { width: 15%; }
+            50% { width: 45%; }
+            80% { width: 80%; }
+            100% { width: 100%; }
+        }
+
+        #boot-cursor {
+            display: inline-block;
+            color: var(--cyan);
+            font-size: 18px;
+            animation: blink 0.8s step-end infinite;
+            margin-top: 8px;
+        }
+
         .cd-home.show {
             opacity: 1;
             pointer-events: auto;
@@ -1480,12 +1557,119 @@
             background: var(--surface-2);
             box-shadow: 0 8px 24px rgba(100, 255, 218, 0.1);
         }
+
+        /* ----- tech stack (with logos) ----- */
+        .tech-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 700px) {
+            .tech-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+        }
+
+        .tech-category {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            padding: 24px 24px 28px;
+            transition: border-color 0.3s ease, transform 0.25s ease;
+            backdrop-filter: blur(2px);
+        }
+
+        .tech-category:hover {
+            border-color: var(--cyan);
+            transform: translateY(-3px);
+        }
+
+        .tech-category h3 {
+            font-family: var(--display);
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--cyan);
+            margin-bottom: 16px;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .tech-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .tech-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--mono);
+            font-size: 13px;
+            padding: 6px 14px 6px 10px;
+            border-radius: 40px;
+            background: var(--surface-2);
+            border: 1px solid var(--border);
+            color: var(--text);
+            transition: all 0.25s ease;
+        }
+
+        .tech-item svg {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+            color: var(--brand-color, var(--text));
+            transition: transform 0.25s ease;
+        }
+
+        .tech-item:hover {
+            border-color: var(--brand-color, var(--cyan));
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        .tech-item:hover svg {
+            transform: scale(1.15);
+        }
+
+        .tech-item span {
+            color: var(--text);
+            transition: color 0.25s ease;
+        }
+
+        .tech-item:hover span {
+            color: var(--brand-color, var(--cyan));
+        }
     </style>
 </head>
 <body>
 
+      <!-- ============================================================
+    BOOT SCREEN (EDEX UI style)
+    ============================================================ -->
+    <div id="boot-screen">
+        <div id="boot-content">
+            <div id="boot-lines">
+                <div class="boot-line">[SYSTEM] Initializing...</div>
+                <div class="boot-line">[KERNEL] Loading modules...</div>
+                <div class="boot-line">[NET] Establishing secure channel...</div>
+                <div class="boot-line">[FS] Mounting root filesystem...</div>
+                <div class="boot-line">[SYS] Checking integrity...</div>
+                <div class="boot-line">[OK] All systems green.</div>
+                <div class="boot-line" id="boot-ready">[READY] Booting portfolio...</div>
+            </div>
+            <div id="boot-progress">
+                <div id="boot-progress-bar"></div>
+            </div>
+            <div id="boot-cursor">▌</div>
+        </div>
+    </div>
+
     <!-- ============================================================
-    HACKING BACKGROUND — enhanced cyberpunk layers
+    HACKING BACKGROUND
     ============================================================ -->
     <canvas id="hacking-canvas"></canvas>
     <div class="hacking-overlay"></div>
@@ -1493,13 +1677,11 @@
     <div class="scan-line-h"></div>
     <div class="hacking-grid"></div>
 
-    <!-- drifting data lines -->
     <div class="data-line">01001000 01100001 01100011 01101011 01101001 01101110 01100111</div>
     <div class="data-line">01110011 01111001 01110011 01110100 01100101 01101101 00100000 01100001 01100011 01110100 01101001 01110110 01100101</div>
     <div class="data-line">01100011 01111001 01100010 01100101 01110010 01110000 01110101 01101110 01101011 00100000 01101101 01101111 01100100 01100101</div>
     <div class="data-line">01000111 01001100 01001001 01010100 01000011 01001000 00100000 01000100 01000101 01010100 01000101 01000011 01010100 01000101 01000100</div>
 
-    <!-- floating orbs -->
     <div class="orb orb-1"></div>
     <div class="orb orb-2"></div>
     <div class="orb orb-3"></div>
@@ -1624,7 +1806,7 @@
                     </div>
                 </div>
 
-                <!-- LQSTC_PRICING_TOOL - confidential, no links -->
+                <!-- LQSTC_PRICING_TOOL -->
                 <div class="project-card">
                     <div class="project-media">
                         <img src="assets/pricing-tool-screenshot.jpg" alt="LQSTC Pricing Tool" style="width:100%;height:100%;object-fit:cover;">
@@ -1639,12 +1821,11 @@
                         <div class="stack">
                             <span>FastAPI</span><span>React</span><span>Vite</span><span>Google Sheets API</span><span>Railway</span><span>Vercel</span>
                         </div>
-                        <!-- Hidden spacer to keep card height aligned -->
                         <div class="project-links" style="opacity:0; pointer-events:none; visibility:hidden; height:0; min-height:0; margin:0; padding:0;">&nbsp;</div>
                     </div>
                 </div>
 
-                <!-- LQSTC_WEBSITE - clickable card + view site button -->
+                <!-- LQSTC_WEBSITE -->
                 <div class="project-card" onclick="window.open('https://luzonquickserve.com.ph','_blank')" style="cursor:pointer;">
                     <div class="project-media">
                         <span class="placeholder-icon">🌐</span>
@@ -1669,7 +1850,7 @@
         </div>
     </section>
 
-    <!-- background -->
+    <!-- background (static – no animation) -->
     <section id="background">
         <div class="section-inner">
             <div class="eyebrow">cat ~/background.log</div>
@@ -1722,7 +1903,157 @@
     </section>
 
     <!-- ============================================================
-    CONTACT — with interactive terminal form (only this block changed)
+    TECH STACK
+    ============================================================ -->
+    <section id="tech-stack">
+        <div class="section-inner">
+            <div class="eyebrow">cat ~/toolbox.json</div>
+            <h2 class="section-title">my <span class="cmd">tech stack</span></h2>
+
+            <div class="tech-grid">
+                <div class="tech-category">
+                    <h3>Languages</h3>
+                    <div class="tech-items">
+                        <div class="tech-item" style="--brand-color: #3776AB;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 2C7.58 2 4 4.69 4 8v8c0 3.31 3.58 6 8 6s8-2.69 8-6V8c0-3.31-3.58-6-8-6z" stroke="#3776AB"/>
+                                <path d="M8 16h8" stroke="#3776AB"/>
+                                <path d="M8 12h8" stroke="#3776AB"/>
+                                <path d="M8 8h8" stroke="#3776AB"/>
+                                <circle cx="6" cy="16" r="1.5" fill="#3776AB"/>
+                                <circle cx="18" cy="16" r="1.5" fill="#3776AB"/>
+                                <path d="M6 8v8" stroke="#3776AB"/>
+                                <path d="M18 8v8" stroke="#3776AB"/>
+                            </svg>
+                            <span>Python</span>
+                        </div>
+                        <div class="tech-item" style="--brand-color: #F7DF1E;">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <rect x="2" y="2" width="20" height="20" rx="2" fill="#F7DF1E"/>
+                                <path d="M8 16.5c.5.8 1.2 1.2 2.2 1.2 1.2 0 2-.6 2-1.8V8h1.8v7.9c0 2.2-1.2 3.1-3 3.1-1.6 0-2.8-.8-3.4-1.8l1.4-.7zm6.5-1.2c.5.7 1.3 1.2 2.5 1.2 1.2 0 2-.5 2-1.4 0-.7-.4-1.1-1.6-1.5l-.8-.3c-1.4-.5-2.3-1.3-2.3-2.6 0-1.6 1.3-2.7 3.2-2.7 1.4 0 2.4.5 3.1 1.2l-1.3 1.2c-.4-.4-.9-.6-1.7-.6-1 0-1.6.5-1.6 1.2 0 .6.4 1 1.4 1.4l.8.3c1.7.6 2.7 1.4 2.7 2.8 0 1.8-1.4 2.9-3.4 2.9-1.4 0-2.6-.6-3.3-1.6l1.3-1.2z"/>
+                            </svg>
+                            <span>JavaScript</span>
+                        </div>
+                        <div class="tech-item" style="--brand-color: #00599C;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10" stroke="#00599C"/>
+                                <path d="M9 9l6 3-6 3V9z" fill="#00599C" stroke="none"/>
+                                <path d="M9 9l6 3-6 3V9z" stroke="#00599C" fill="none"/>
+                                <path d="M12 2v4M12 18v4M2 12h4M18 12h4" stroke="#00599C" stroke-width="1.5"/>
+                            </svg>
+                            <span>C++</span>
+                        </div>
+                        <div class="tech-item" style="--brand-color: #E34F26;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                <polygon points="3,2 4.5,20 12,22 19.5,20 21,2" stroke="#E34F26" fill="none"/>
+                                <polygon points="12,4.5 12,19.5 6,18 5,6" stroke="#E34F26" fill="none" opacity="0.5"/>
+                                <path d="M12 12h-4l-.5-2.5h4.5V7H7l.5 5h4.5v2.5H7.5L8 17l4 1v-3.5h4.5l.5-5H12v2.5h-3.5l.5-3H12V7l5 .5-1.5 6.5L12 17z" stroke="#E34F26" fill="none"/>
+                            </svg>
+                            <span>HTML/CSS</span>
+                        </div>
+                        <div class="tech-item" style="--brand-color: #4479A1;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                <rect x="3" y="5" width="18" height="14" rx="2" stroke="#4479A1"/>
+                                <path d="M3 9h18M3 13h18" stroke="#4479A1"/>
+                                <path d="M7 17h2M11 17h2" stroke="#4479A1"/>
+                            </svg>
+                            <span>SQL</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tech-category">
+                    <h3>Frameworks &amp; Libraries</h3>
+                    <div class="tech-items">
+                        <div class="tech-item" style="--brand-color: #61DAFB;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <circle cx="12" cy="12" r="2.5" stroke="#61DAFB"/>
+                                <ellipse cx="12" cy="12" rx="8" ry="4" stroke="#61DAFB" transform="rotate(0 12 12)"/>
+                                <ellipse cx="12" cy="12" rx="8" ry="4" stroke="#61DAFB" transform="rotate(60 12 12)"/>
+                                <ellipse cx="12" cy="12" rx="8" ry="4" stroke="#61DAFB" transform="rotate(120 12 12)"/>
+                            </svg>
+                            <span>React</span>
+                        </div>
+                        <div class="tech-item" style="--brand-color: #009688;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 20L12 4l8 16" stroke="#009688"/>
+                                <path d="M8 14h8" stroke="#009688"/>
+                                <path d="M6 17h12" stroke="#009688"/>
+                            </svg>
+                            <span>FastAPI</span>
+                        </div>
+                        <div class="tech-item" style="--brand-color: #000000;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                <path d="M12 4v16M8 8l8 8M8 16l8-8" stroke="#000000"/>
+                                <circle cx="12" cy="12" r="9" stroke="#000000" fill="none"/>
+                            </svg>
+                            <span>Flask</span>
+                        </div>
+                        <div class="tech-item" style="--brand-color: #5C3EE8;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                <rect x="4" y="4" width="16" height="16" rx="3" stroke="#5C3EE8"/>
+                                <path d="M9 9l6 6M15 9l-6 6" stroke="#5C3EE8"/>
+                                <circle cx="12" cy="12" r="2" stroke="#5C3EE8"/>
+                            </svg>
+                            <span>OpenCV</span>
+                        </div>
+                        <div class="tech-item" style="--brand-color: #00B4D8;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                <path d="M4 12h4l2-4 4 8 2-4h4" stroke="#00B4D8"/>
+                                <circle cx="7" cy="12" r="1.5" fill="#00B4D8" stroke="none"/>
+                                <circle cx="17" cy="12" r="1.5" fill="#00B4D8" stroke="none"/>
+                            </svg>
+                            <span>MediaPipe</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tech-category">
+                    <h3>Tools &amp; Platforms</h3>
+                    <div class="tech-items">
+                        <div class="tech-item" style="--brand-color: #F05032;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                <path d="M12 2L2 12l10 10 10-10L12 2z" stroke="#F05032"/>
+                                <path d="M8 8l8 8M8 16l8-8" stroke="#F05032"/>
+                                <circle cx="12" cy="12" r="1" fill="#F05032" stroke="none"/>
+                            </svg>
+                            <span>Git</span>
+                        </div>
+                        <div class="tech-item" style="--brand-color: #2496ED;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                <path d="M3 12h18M4 8h2M4 16h2M8 8h2M8 16h2M12 8h2M12 16h2M16 8h2M16 16h2" stroke="#2496ED"/>
+                                <circle cx="21" cy="12" r="1.5" fill="#2496ED" stroke="none"/>
+                            </svg>
+                            <span>Docker</span>
+                        </div>
+                        <div class="tech-item" style="--brand-color: #000000;">
+                            <svg viewBox="0 0 24 24" fill="currentColor">
+                                <polygon points="12,4 4,20 20,20" fill="#000000"/>
+                            </svg>
+                            <span>Vercel</span>
+                        </div>
+                        <div class="tech-item" style="--brand-color: #8B5CF6;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                <rect x="4" y="4" width="16" height="16" rx="2" stroke="#8B5CF6"/>
+                                <path d="M8 12h8M12 8v8" stroke="#8B5CF6"/>
+                            </svg>
+                            <span>Railway</span>
+                        </div>
+                        <div class="tech-item" style="--brand-color: #00979D;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                                <circle cx="12" cy="12" r="9" stroke="#00979D"/>
+                                <path d="M7 12h10M12 7v10" stroke="#00979D"/>
+                            </svg>
+                            <span>Arduino</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+    CONTACT
     ============================================================ -->
     <section id="contact">
         <div class="section-inner">
@@ -1744,7 +2075,6 @@
                 </a>
             </div>
 
-                        <!-- INTERACTIVE TERMINAL CONTACT FORM -->
             <div class="contact-window terminal-window">
                 <div class="contact-window-header">
                     <div class="dots"><span class="dot r"></span><span class="dot y"></span><span class="dot g"></span></div>
@@ -1762,6 +2092,7 @@
                     </form>
                 </div>
             </div>
+        </div>
     </section>
 
     <footer>© 2026 Joaquin Sanguyo — built with HTML, CSS, JS.</footer>
@@ -1801,7 +2132,23 @@
         tabsEl.querySelectorAll('a').forEach(a => a.addEventListener('click', () => tabsEl.classList.remove('open')));
 
         // ============================================================
-        // INTERACTIVE TERMINAL — send message via mailto (new)
+        // SCROLL REVEAL (added) — all sections except #background
+        // ============================================================
+        const revealSections = document.querySelectorAll('section:not(#background) .section-inner');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, {
+            threshold: 0.15,
+            rootMargin: '0px 0px -50px 0px'
+        });
+        revealSections.forEach(el => observer.observe(el));
+
+        // ============================================================
+        // INTERACTIVE TERMINAL — send message via mailto
         // ============================================================
         (function() {
             const form = document.getElementById('terminal-form');
@@ -1820,12 +2167,10 @@
             }
 
             function sendMessage(message) {
-                // Disable input
                 input.disabled = true;
                 input.style.opacity = '0.4';
                 input.placeholder = 'sending...';
 
-                // Show system messages
                 addLine(`<span class="k">$</span> echo "Transmitting message..."`);
                 addLine(`<span class="k">$</span> <span style="color:var(--muted);">Encrypting payload...</span>`);
 
@@ -1846,23 +2191,19 @@
                 }, 1600);
 
                 setTimeout(() => {
-                    // Open mailto with the message
                     const subject = encodeURIComponent('Portfolio Contact Message');
                     const body = encodeURIComponent(message + '\n\n— Sent from your portfolio terminal');
                     window.location.href = `mailto:joaquinsanguyo@gmail.com?subject=${subject}&body=${body}`;
 
-                    // Add confirmation
                     addLine(`<span class="k">$</span> <span style="color:var(--cyan);">✓</span> Mail client opened — ready to send!`);
                     addLine(`<span class="k">$</span> echo "Thank you for reaching out. I'll reply within a day or two."`);
 
-                    // Re-enable input
                     input.disabled = false;
                     input.style.opacity = '1';
                     input.placeholder = 'type your message...';
                     input.value = '';
                     input.focus();
 
-                    // Add a small note about fallback
                     setTimeout(() => {
                         addLine(`<span class="k">$</span> <span style="color:var(--muted);opacity:0.6;">// if mail client doesn't open, you can copy the message and email me directly</span>`);
                     }, 800);
@@ -1875,18 +2216,13 @@
                 const message = input.value.trim();
                 if (!message) return;
 
-                // Clear input and show sent message
                 const sentMsg = message;
                 input.value = '';
 
-                // Show user's message in terminal
                 addLine(`<span style="color:var(--muted);">[you]</span> ${message}`);
-
-                // Start the sending process
                 sendMessage(sentMsg);
             });
 
-            // Focus input on click anywhere in terminal
             const terminalBody = document.getElementById('terminal-body');
             terminalBody.addEventListener('click', function() {
                 input.focus();
@@ -1908,12 +2244,10 @@
             window.addEventListener('resize', resize);
             resize();
 
-            // character set: include hex + some specials
             const chars = '0123456789ABCDEF';
             const fontSize = 14;
             const columns = Math.floor(w / fontSize);
 
-            // each drop: [y position, speed, color offset, char index]
             const drops = [];
             for (let i = 0; i < columns; i++) {
                 drops[i] = {
@@ -1924,25 +2258,18 @@
                 };
             }
 
-            // store a few "glitch" blocks
-            let glitches = [];
-
             function draw() {
-                // semi-transparent black to create trail
                 ctx.fillStyle = 'rgba(11,11,14,0.08)';
                 ctx.fillRect(0, 0, w, h);
 
-                // draw each character
                 for (let i = 0; i < drops.length; i++) {
                     const drop = drops[i];
                     const x = i * fontSize + 4;
                     const y = drop.y * fontSize;
 
-                    // pick character
                     const charIndex = (drop.charOffset + Math.floor(Date.now() / 2000) + i) % chars.length;
                     const char = chars[charIndex];
 
-                    // set color
                     let color = 'rgba(100,255,218,';
                     let alpha = 0.08 + Math.random() * 0.12;
                     if (drop.color === 'magenta') {
@@ -1957,16 +2284,13 @@
                     ctx.font = fontSize + 'px "JetBrains Mono", monospace';
                     ctx.fillText(char, x, y);
 
-                    // occasionally draw a brighter "core" character
                     if (Math.random() < 0.02) {
                         ctx.fillStyle = 'rgba(100,255,218,0.25)';
                         ctx.fillText(char, x + 1, y - 1);
                     }
 
-                    // move down
                     drop.y += drop.speed * 0.6;
 
-                    // reset with randomness
                     if (drop.y * fontSize > h + 20) {
                         drop.y = Math.floor(Math.random() * -30);
                         drop.speed = 0.5 + Math.random() * 1.2;
@@ -1975,7 +2299,6 @@
                     }
                 }
 
-                // draw occasional "data burst" clusters
                 if (Math.random() < 0.008) {
                     const bx = Math.floor(Math.random() * columns);
                     const by = Math.floor(Math.random() * 20) - 10;
@@ -1990,7 +2313,6 @@
                     }
                 }
 
-                // occasional glitch rectangles
                 if (Math.random() < 0.002) {
                     const gx = Math.random() * w;
                     const gy = Math.random() * h;
@@ -2004,6 +2326,23 @@
             }
 
             draw();
+        })();
+
+        // ============================================================
+        // BOOT SEQUENCE – fade out after 2.5 seconds
+        // ============================================================
+        (function() {
+            const bootScreen = document.getElementById('boot-screen');
+            if (!bootScreen) return;
+
+            // After the boot animation (2.5s), fade out the screen
+            setTimeout(() => {
+                bootScreen.classList.add('fade-out');
+                // Remove from DOM after transition ends
+                setTimeout(() => {
+                    bootScreen.style.display = 'none';
+                }, 1000); // match transition duration
+            }, 2800); // 2.5s + a little extra
         })();
     </script>
 </body>
